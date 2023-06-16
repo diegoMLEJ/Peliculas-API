@@ -57,6 +57,74 @@ function registrarUsuario(req, res){
     })
 }
 
+function accesoUsuario(req, res) {
+    var params = req.body;
+    var email = params.email;
+    var password = params.password;
+    var user;
+    usuarioModelo.findOne({ email: email })
+        .then(foundUser => {
+            if (!foundUser) {
+                throw { status: 404, message: 'El usuario no existe' };
+            }
+            user = foundUser;
+            return bcrypt.compare(password, user.password);
+        })
+        .then(check => {
+            if (check) {
+                if (params.gethash) {
+                    res.status(200).send({ message: 'El usuario'});
+                } else {
+                    res.status(200).send({ user: user });
+                }
+            } else {
+                throw { status: 404, message: 'El usuario no se ha identificado' };
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(error.status || 500).send(error.message || 'Error en el servidor');
+        });
+}
+
+function actualizarUsuario(req, res) {
+    var userId = req.params.id;
+    var update = req.body;    usuarioModelo.findByIdAndUpdate(userId, update)
+        .then(userUpdate => {
+            if (!userUpdate) {
+                res.status(404).send({ message: 'No se ha podido encontrar el usuario' });
+            } else {
+                res.status(200).send({ user: userUpdate });
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).send({ message: 'Error al actualizar el usuario en el servidor' });
+        });
+}
+
+function borrarUsuario(req, res) {
+    var userId = req.params.id;
+
+    usuarioModelo.findOneAndRemove({ _id: userId })
+        .then(function (usuarioRemovido) {
+            if (!usuarioRemovido) {
+                res.status(404).send({ mensaje: 'Usuario no encontrado' });
+            } else {
+                res.status(200).send({
+                    usuario: usuarioRemovido,
+                    mensaje: 'Usuario removido'
+                });
+            }
+        })
+        .catch(function (error) {
+            res.status(500).send({ mensaje: 'Error en el servidor' });
+        });
+}
+
 module.exports = {
     registrarUsuario,
+    accesoUsuario,
+    actualizarUsuario,
+    borrarUsuario
 };

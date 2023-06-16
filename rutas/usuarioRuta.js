@@ -7,6 +7,9 @@ var multipart = require('connect-multiparty');
 
 //Solicitudes para consultas 
 api.post('/registrar', usuarioControl.registrarUsuario);
+api.post('/login', usuarioControl.accesoUsuario);
+api.put('/actualizar/:id', usuarioControl.actualizarUsuario);
+api.delete('/eliminar/:id', usuarioControl.borrarUsuario);
 
 
 module.exports = api;
