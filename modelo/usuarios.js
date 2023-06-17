@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
@@ -8,8 +8,7 @@ var EsquemaUsuarios = Schema({
     apellido: String,
     email: String,
     password: String,
-    phone : String,
-    password: String,
+    phone: String,
 });
 
 module.exports = mongoose.model('Usuarios', EsquemaUsuarios);

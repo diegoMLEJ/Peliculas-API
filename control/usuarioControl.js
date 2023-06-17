@@ -1,17 +1,17 @@
 'use strict'
 
 const bcrypt = require('bcrypt');
-var usuarioModelo = require('../modelo/usuarios');
-var usuario = new usuarioModelo();
+var UsuarioModelo = require('../modelo/usuarios');
+var usuario = new UsuarioModelo();
 var fs = require('fs');
 var path = require('path');
 const { rejects } = require('assert');
 
-function registrarUsuario(req, res){
+function registrarUsuario(req, res) {
     var params = req.body;
     console.log(params);
-
-    var nuevoUsuario = new usuario();
+  
+    var nuevoUsuario = new UsuarioModelo();
     nuevoUsuario.nombre = params.nombre;
     nuevoUsuario.apellido = params.apellido;
     nuevoUsuario.email = params.email;
@@ -62,7 +62,7 @@ function accesoUsuario(req, res) {
     var email = params.email;
     var password = params.password;
     var user;
-    usuarioModelo.findOne({ email: email })
+    UsuarioModelo.findOne({ email: email })
         .then(foundUser => {
             if (!foundUser) {
                 throw { status: 404, message: 'El usuario no existe' };
@@ -89,7 +89,7 @@ function accesoUsuario(req, res) {
 
 function actualizarUsuario(req, res) {
     var userId = req.params.id;
-    var update = req.body;    usuarioModelo.findByIdAndUpdate(userId, update)
+    var update = req.body;    UsuarioModelo.findByIdAndUpdate(userId, update)
         .then(userUpdate => {
             if (!userUpdate) {
                 res.status(404).send({ message: 'No se ha podido encontrar el usuario' });
@@ -106,7 +106,7 @@ function actualizarUsuario(req, res) {
 function borrarUsuario(req, res) {
     var userId = req.params.id;
 
-    usuarioModelo.findOneAndRemove({ _id: userId })
+    UsuarioModelo.findOneAndRemove({ _id: userId })
         .then(function (usuarioRemovido) {
             if (!usuarioRemovido) {
                 res.status(404).send({ mensaje: 'Usuario no encontrado' });
